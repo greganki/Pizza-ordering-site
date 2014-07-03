@@ -40,41 +40,33 @@ function save_orders() {
 }
 
 function get_order_html(pizzas, delivery, show_delete) {
-    order_html = "";
+  order_html = "";
 
-//Add text box when delivery is choosen
-    if (delivery) {
-      order_html += '<p>';
-      order_html += '<input type="text" class="form-control" id="address" name="address" placeholder="Address"><br/>';
-      order_html += '<input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone Number"> ';
-      order_html += '</p>';
+  total = 0.00;
+
+  // Add Pizzas to the order
+  for (var i = 0; i < pizzas.length; ++i) {
+    pizza = pizzas[i];
+    total += pizza.price;
+
+    order_html += '<tr id="' + i + '"><th>' + pizza.name + '</th><td>$' + pizza.price.toFixed(2) + '</td>';
+    if (show_delete) {
+      order_html += '<td><button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button></td>';
     }
+    order_html += '</tr>';
+  }
 
-    total = 0.00;
+  // Add Delivery to the order
+  if (delivery) {
+    total += delivery_price;
+    order_html += '<tr><th>Delivery</th><td>$' + delivery_price.toFixed(2) + '</td></tr>';
+  }
 
-    // Add Pizzas to the order
-    for (var i = 0; i < pizzas.length; ++i) {
-      pizza = pizzas[i];
-      total += pizza.price;
+  // Add GST
+  order_html += '<tr><th>GST</th><th>$' + (total * 3 / 23).toFixed(2) + '</th></tr>';
 
-      order_html += '<tr id="' + i + '"><th>' + pizza.name + '</th><td>$' + pizza.price.toFixed(2) + '</td>';
-      if (show_delete) {
-        order_html += '<td><button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove"></span></button></td>';
-      }
-      order_html += '</tr>';
-    }
+  // Add price total
+  order_html += '<tr><th>Total</th><th>$' + total + '</th></tr>';
 
-    // Add Delivery to the order
-    if (delivery) {
-      total += delivery_price;
-      order_html += '<tr><th>Delivery</th><td>$' + delivery_price.toFixed(2) + '</td></tr>';
-    }
-
-    // Add GST
-    order_html += '<tr><th>GST</th><th>$' + (total * 3 / 23).toFixed(2) + '</th></tr>';
-
-    // Add price total
-    order_html += '<tr><th>Total</th><th>$' + total + '</th></tr>';
-
-    return order_html;
+  return order_html;
 }
